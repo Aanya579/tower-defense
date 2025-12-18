@@ -39,6 +39,8 @@ class enemy:
        dy*=10
        self.pos = (x + dx, y + dy)
 
+       
+
        print(self.pos)
         
 
@@ -81,6 +83,8 @@ class tower:
             minimum_enemy =  e
       b = bullet(p_x, p_y, minimum_enemy)
       game.bullets.append(b)
+
+
       
     
 class bullet:
@@ -112,6 +116,9 @@ class bullet:
       dx*=10
       dy*=10
       self.pos = (x + dx, y + dy)
+
+      
+
 
 
 class Path:
@@ -145,12 +152,22 @@ class game:
           i.tower_update()
         for i in self.bullets:
           i.draw(pen)
+          
           i.bullet_update()
+
         for i in self.enemies:
+           self.a = input("press m to move")
+           if self.a == "m":
+            i.x += 100
+            i.y += 100
+           i.draw(pen)
+
            i.update()
+
         for i in self.paths:
            i.draw(pen)
-        pen.clear()
+        
+      pen.clear()
         
 pen = turtle.Turtle()
 
@@ -163,11 +180,11 @@ path = [(100, 100),
         (47, 200),
         (50, 72)]
 bob = enemy(10, 500, path)
-# for i in range(100):
-#    bob.update()
-#    bob.draw(pen)
-#   pen.clear()
-#turtle.tracer(0, 0)
+for i in range(100):
+   bob.update()
+   bob.draw(pen)
+   pen.clear()
+turtle.tracer(0, 0)
 main = game(pen)
 main.paths.append(ben)
 main.enemies.append(bob)
