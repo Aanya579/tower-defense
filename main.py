@@ -1,5 +1,6 @@
 import turtle
 import math
+import time
 class enemy:
     def __init__(self, x, y, path):
       self.x = x
@@ -29,9 +30,11 @@ class enemy:
        dx = p_x - x
        dy = p_y - y
        h = math.sqrt(dx*dx + dy*dy)
+       print(h)
        if h < 5:
           self.path_pos += 1
        if self.path_pos == len(self.path):
+          print("died")
           self.alive = False
        dx/=h
        dy/=h
@@ -141,9 +144,18 @@ class game:
       self.towers = []
       self.bullets = []
       self.paths = []
+      self.path = []
       self.pen = pen
+      self.timer = 0
    def run(self, pen):
       while True:
+        self.pen.clear()
+        self.timer += 1
+        print(self.timer)
+        print(self.enemies)
+        if self.timer % 10 == 0:
+         e = enemy(0, 0, self.path)
+         self.enemies.append(e)
         for i in self.enemies:
           i.draw(pen)
           i.update()
@@ -152,21 +164,28 @@ class game:
           i.tower_update()
         for i in self.bullets:
           i.draw(pen)
+
           
           i.bullet_update()
+          print(self.enemies)
 
         for i in self.enemies:
-           self.a = input("press m to move")
-           if self.a == "m":
-            i.x += 100
-            i.y += 100
+           #self.a = input("press m to move")
+           #if self.a == "m":
+            #i.x += 100
+            #i.y += 100
            i.draw(pen)
 
            i.update()
 
         for i in self.paths:
            i.draw(pen)
+
+        time.sleep(15/1000)
+
+        turtle.update()
         
+      
       pen.clear()
         
 pen = turtle.Turtle()
@@ -184,8 +203,9 @@ for i in range(100):
    bob.update()
    bob.draw(pen)
    pen.clear()
-turtle.tracer(0, 0)
+turtle.tracer(0, 100000000000000)
 main = game(pen)
+main.path = path
 main.paths.append(ben)
 main.enemies.append(bob)
 main.run(pen)
