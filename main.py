@@ -51,6 +51,7 @@ class tower:
     def __init__(self, x, y):
       self.x = x
       self.y = y
+      self.timer = 10
       self.pos = (0, 0)
       self.alive = True
     def draw(self, pen):
@@ -70,8 +71,7 @@ class tower:
         pen.right(90)
         pen.end_fill()
     def tower_update(self, enemies, game):
-      timer = 5
-      minimum_distance = 10,000
+      minimum_distance = 10000
       minimum_index = 0
       for e in enemies:
          p_x = self.x
@@ -84,9 +84,10 @@ class tower:
          if minimum_distance > h:
             minimum_distance = h
             minimum_enemy =  e
-      b = bullet(p_x, p_y, minimum_enemy)
-      game.bullets.append(b)
-
+      self.timer -= 1
+      if self.timer == 0:
+        b = bullet(p_x, p_y, minimum_enemy)
+        game.bullets.append(b)
 
       
     
@@ -101,24 +102,25 @@ class bullet:
       pen.goto(x, y-8)
       pen.pendown()
       pen.forward(5)
+      print("updating bullet")
    def __init__(self, x, y, enemy):
       self.x = x
       self.y = y
       self.enemy = enemy
    def bullet_update(self, enemies, game):
-      x, y = self.pos
-      print(self.pos)
+      x, y = self.x, self.y
+      print(self.x, self.y)
       p_x, p_y = self.enemy.pos
       dx = p_x - x
       dy = p_y - y
       h = math.sqrt(dx*dx + dy*dy)
       if h < 5:
-        self.enemy_pos += 1
+        self.enemy.alive = False
       dx/=h
       dy/=h
       dx*=10
       dy*=10
-      self.pos = (x + dx, y + dy)
+      self.x, self.y = (x + dx, y + dy)
 
       
 
@@ -147,6 +149,8 @@ class game:
       self.path = []
       self.pen = pen
       self.timer = 0
+      t = tower(50, 50)
+      self.towers.append(t)
    def run(self, pen):
       while True:
         self.pen.clear()
@@ -161,12 +165,10 @@ class game:
           i.update()
         for i in self.towers:
           i.draw(pen)
-          i.tower_update()
+          i.tower_update(self.enemies, self)
         for i in self.bullets:
           i.draw(pen)
-
-          
-          i.bullet_update()
+          i.bullet_update(self.enemies, self)
           print(self.enemies)
 
         for i in self.enemies:
@@ -191,6 +193,7 @@ class game:
 pen = turtle.Turtle()
 
 pen.speed(0)
+screen = turtle.Screen()
 tom = tower(50, 60)
 tom.draw(pen)
 ben = Path()
@@ -205,6 +208,11 @@ for i in range(100):
    pen.clear()
 turtle.tracer(0, 100000000000000)
 main = game(pen)
+def spawn_tower(x, y):
+   t = tower(x, y)
+   game.towers.append(t)
+   print("ASIEDPFHERBGRDFFHWERAPTJAWTRENsd \n \n \n")
+screen.onclick(spawn_tower)
 main.path = path
 main.paths.append(ben)
 main.enemies.append(bob)
